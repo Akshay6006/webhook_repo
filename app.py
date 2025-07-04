@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 CORS(app)
@@ -14,7 +14,8 @@ collection = db["events"]
 def webhook():
     data = request.json
     event_type = request.headers.get('X-GitHub-Event')
-    timestamp = datetime.utcnow().strftime("%d %B %Y - %I:%M %p UTC")
+    ist_time = datetime.utcnow() + timedelta(hours=5, minutes=30)
+    timestamp = ist_time.strftime("%d %B %Y - %I:%M %p IST")
 
     if event_type == "ping":
         return "Ping received", 200
@@ -34,6 +35,7 @@ def webhook():
         return "Event not handled", 200
 
     collection.insert_one({"message": message})
+    print("Message inserted into MongoDB:", message)
     return "OK", 200
 
 # ✅ This is the route your frontend needs
