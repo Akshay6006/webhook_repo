@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Latest GitHub Events</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .event { margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h2>Latest GitHub Events</h2>
+  <div id="events"></div>
+
+  <script>
+    async function fetchEvents() {
+      const res = await fetch('/events');
+      const data = await res.json();
+      const eventsDiv = document.getElementById('events');
+      eventsDiv.innerHTML = '';
+      data.reverse().forEach(event => {
+        const div = document.createElement('div');
+        div.className = 'event';
+        div.innerText = event.message;
+        eventsDiv.appendChild(div);
+      });
+    }
+
+    fetchEvents();
+    setInterval(fetchEvents, 15000);
+  </script>
+</body>
+</html>
